@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}MedTribute{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}A memorial platform honoring doctors.{% endblock %}">
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <header>
+    <h1><a href="/">MedTribute</a></h1>
+    <button id="themeToggle">Toggle Theme</button>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <script>
+    document.getElementById('themeToggle').onclick = () => {
+      const html = document.documentElement;
+      html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    }
+  </script>
+</body>
+</html>
