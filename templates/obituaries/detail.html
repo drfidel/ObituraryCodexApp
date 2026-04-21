@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+{% block title %}{{ obituary.full_name }} - Tribute{% endblock %}
+{% block meta_description %}{{ obituary.seo_description|default:obituary.biography|truncatewords:24 }}{% endblock %}
+{% block content %}
+<article>
+  <h2>{{ obituary.full_name }}</h2>
+  <p>{{ obituary.specialty }} | {{ obituary.hospital_affiliations }}</p>
+  <p>{{ obituary.date_of_birth }} - {{ obituary.date_of_death }}</p>
+  <div>{{ obituary.biography }}</div>
+
+  <section>
+    <h3>Funeral</h3>
+    <p>{{ obituary.funeral_location }} on {{ obituary.funeral_date }}</p>
+    {% if obituary.funeral_map_url %}<a href="{{ obituary.funeral_map_url }}">Map</a>{% endif %}
+  </section>
+
+  {% if next_event %}
+    <section>
+      <h3>Upcoming: {{ next_event.title }}</h3>
+      <p>{{ next_event.starts_at }}</p>
+    </section>
+  {% endif %}
+
+  <section id="live-wall">
+    <h3>Live Tribute Wall</h3>
+    <ul id="messages"></ul>
+    <input id="msgInput" placeholder="Write a condolence" />
+    <button id="sendMsg">Send</button>
+  </section>
+</article>
+<script>
+  const socket = new WebSocket(`ws://${window.location.host}/ws/tributes/{{ obituary.slug }}/`);
+  const ul = document.getElementById('messages');
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    const li = document.createElement('li');
+    li.innerText = `${data.user}: ${data.message}`;
+    ul.prepend(li);
+  };
+  document.getElementById('sendMsg').onclick = () => {
+    const input = document.getElementById('msgInput');
+    socket.send(JSON.stringify({user: 'guest', message: input.value}));
+    input.value = '';
+  };
+</script>
+{% endblock %}

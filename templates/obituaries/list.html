@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block title %}Doctor Tributes - MedTribute{% endblock %}
+{% block content %}
+<section>
+  <form method="get">
+    <input name="q" value="{{ query }}" placeholder="Search by name, specialty, hospital"/>
+    <button type="submit">Search</button>
+  </form>
+  <div class="tribute-grid">
+  {% for obituary in obituaries %}
+    <article class="card">
+      <h3><a href="/tribute/{{ obituary.slug }}/">{{ obituary.full_name }}</a></h3>
+      <p>{{ obituary.specialty }}</p>
+      <p>{{ obituary.hospital_affiliations|truncatewords:16 }}</p>
+    </article>
+  {% empty %}
+    <p>No tributes found.</p>
+  {% endfor %}
+  </div>
+</section>
+{% endblock %}
